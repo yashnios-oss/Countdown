@@ -1,8 +1,6 @@
 import streamlit as st
 from datetime import date, datetime, timedelta
 
-# Page config - no emojis to avoid Unicode issues on deployment
-
 st.set_page_config(page_title=“Date Counter and Reminders”, layout=“centered”)
 
 st.title(“Date Counter and Reminders”)

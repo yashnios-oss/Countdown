@@ -1,27 +1,25 @@
 import streamlit as st
 from datetime import date, datetime, timedelta
-import time
-import json
 
-# ── Page config ──────────────────────────────────────────────────────────────
+# Page config - no emojis to avoid Unicode issues on deployment
 
-st.set_page_config(page_title=“📅 Date Counter & Reminders”, layout=“centered”)
+st.set_page_config(page_title=“Date Counter and Reminders”, layout=“centered”)
 
-st.title(“📅 Date Counter & Reminders”)
+st.title(“Date Counter and Reminders”)
 st.markdown(”—”)
 
-# ── Session state for reminders ───────────────────────────────────────────────
+# Session state for reminders
 
 if “reminders” not in st.session_state:
 st.session_state.reminders = []
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
 
-# SECTION 1 — Days Between Two Dates
+# SECTION 1 - Days Between Two Dates
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
 
-st.header(“🔢 Days Between Two Dates”)
+st.header(“Days Between Two Dates”)
 
 col1, col2 = st.columns(2)
 with col1:
@@ -37,60 +35,55 @@ remaining_days = abs(days) % 7
 
 ```
 if days == 0:
-    st.success("✅ Both dates are the same!")
+    st.success("Both dates are the same!")
 elif days > 0:
     st.info(
-        f"⏳ **{days} days** from {start_date.strftime('%B %d, %Y')} to {end_date.strftime('%B %d, %Y')}\n\n"
-        f"That's **{weeks} week(s)** and **{remaining_days} day(s)**."
+        f"{days} days from {start_date.strftime('%B %d, %Y')} to {end_date.strftime('%B %d, %Y')}\n\n"
+        f"That is {weeks} week(s) and {remaining_days} day(s)."
     )
 else:
     st.warning(
-        f"⚠️ End date is before start date by **{abs(days)} days** "
+        f"End date is before start date by {abs(days)} days "
         f"({weeks} week(s) and {remaining_days} day(s))."
     )
 ```
 
 st.markdown(”—”)
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
 
-# SECTION 2 — Countdown Timer
+# SECTION 2 - Countdown Timer
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
 
-st.header(“⏰ Countdown to a Target Date”)
+st.header(“Countdown to a Target Date”)
 
 target_date = st.date_input(“Select Target Date”, value=date.today() + timedelta(days=7), key=“target”)
-target_label = st.text_input(“Label (optional)”, placeholder=“e.g. My Birthday 🎂”)
+target_label = st.text_input(“Label (optional)”, placeholder=“e.g. My Birthday”)
 
 today = date.today()
 countdown_days = (target_date - today).days
 
 if countdown_days > 0:
 label_text = f”**{target_label}**” if target_label else “your target date”
-st.success(f”🚀 {countdown_days} days remaining until {label_text}!”)
-
-```
-# Visual progress bar (assuming a 365-day window)
+st.success(f”{countdown_days} days remaining until {label_text}!”)
 progress = max(0, min(1, 1 - countdown_days / 365))
-st.progress(progress, text=f"Progress toward {target_date.strftime('%B %d, %Y')}")
-```
-
+st.progress(progress, text=f”Progress toward {target_date.strftime(’%B %d, %Y’)}”)
 elif countdown_days == 0:
 st.balloons()
-st.success(“🎉 Today is the day!”)
+st.success(“Today is the day!”)
 else:
-st.error(f”⚠️ That date was {abs(countdown_days)} day(s) ago.”)
+st.error(f”That date was {abs(countdown_days)} day(s) ago.”)
 
 st.markdown(”—”)
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
 
-# SECTION 3 — Reminders
+# SECTION 3 - Reminders
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
 
-st.header(“🔔 Reminders”)
+st.header(“Reminders”)
 
 with st.form(“reminder_form”, clear_on_submit=True):
 r_col1, r_col2 = st.columns(2)
@@ -98,8 +91,8 @@ with r_col1:
 reminder_date = st.date_input(“Reminder Date”, value=date.today() + timedelta(days=1))
 with r_col2:
 reminder_time = st.time_input(“Reminder Time”, value=datetime.now().time().replace(second=0, microsecond=0))
-reminder_text = st.text_input(“Reminder Note”, placeholder=“e.g. Submit report 📝”)
-submitted = st.form_submit_button(“➕ Add Reminder”)
+reminder_text = st.text_input(“Reminder Note”, placeholder=“e.g. Submit report”)
+submitted = st.form_submit_button(“Add Reminder”)
 
 ```
 if submitted and reminder_text:
@@ -114,7 +107,7 @@ if submitted and reminder_text:
 # Display reminders
 
 if st.session_state.reminders:
-st.subheader(“📋 Your Reminders”)
+st.subheader(“Your Reminders”)
 now = datetime.now()
 
 ```
@@ -134,25 +127,25 @@ for idx, reminder in sorted_reminders:
         days_left = diff.days
         hours_left = (total_seconds % 86400) // 3600
         mins_left = (total_seconds % 3600) // 60
-        countdown_str = f"⏳ {days_left}d {hours_left}h {mins_left}m remaining"
-        status_color = "🟢"
+        countdown_str = f"{days_left}d {hours_left}h {mins_left}m remaining"
+        status = "[UPCOMING]"
     elif total_seconds > -3600:
-        countdown_str = "🔔 DUE NOW / Recently due"
-        status_color = "🔴"
+        countdown_str = "DUE NOW / Recently due"
+        status = "[DUE]"
     else:
-        countdown_str = f"✅ Past ({reminder_dt.strftime('%b %d, %Y')})"
-        status_color = "⚫"
+        countdown_str = f"Past ({reminder_dt.strftime('%b %d, %Y')})"
+        status = "[DONE]"
 
     with st.container():
         col_a, col_b = st.columns([5, 1])
         with col_a:
             st.markdown(
-                f"{status_color} **{reminder['text']}**  \n"
-                f"🗓 {reminder_dt.strftime('%B %d, %Y at %I:%M %p')}  \n"
+                f"{status} **{reminder['text']}**  \n"
+                f"Date: {reminder_dt.strftime('%B %d, %Y at %I:%M %p')}  \n"
                 f"{countdown_str}"
             )
         with col_b:
-            if st.button("🗑", key=f"del_{idx}"):
+            if st.button("Delete", key=f"del_{idx}"):
                 to_delete.append(idx)
 
 for idx in reversed(to_delete):
@@ -160,7 +153,7 @@ for idx in reversed(to_delete):
 if to_delete:
     st.rerun()
 
-if st.button("🗑 Clear All Reminders"):
+if st.button("Clear All Reminders"):
     st.session_state.reminders = []
     st.rerun()
 ```
@@ -169,4 +162,4 @@ else:
 st.info(“No reminders yet. Add one above!”)
 
 st.markdown(”—”)
-st.caption(“Built with ❤️ using Streamlit”)
+st.caption(“Built with Streamlit”)

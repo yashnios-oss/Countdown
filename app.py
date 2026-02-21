@@ -8,7 +8,7 @@ st.title("🌐 Google-Powered Person Search")
 
 # --- API Configuration ---
 # You will enter your API Key here
-SERPER_API_KEY = "YOUR_API_KEY_HERE" 
+SERPER_API_KEY =  "95cddad40fabf6213923685ee418c919620d10bf"
 
 with st.sidebar:
     st.info("Using Serper (Google Search API) for better reliability.")

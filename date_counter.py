@@ -1,7 +1,7 @@
 import streamlit as st
 from datetime import date, datetime, timedelta
 
-st.set_page_config(page_title=“Date Counter and Reminders”, layout=“centered”)
+st.set_page_config(page_title= "Date Counter and Reminders”, layout=“centered”)
 
 st.title(“Date Counter and Reminders”)
 st.markdown(”—”)

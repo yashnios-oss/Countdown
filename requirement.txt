@@ -1,2 +1,2 @@
 pip install streamlit
-streamlit run date_counter.py
+ 
